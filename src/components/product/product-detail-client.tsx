@@ -110,10 +110,11 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 </TabsTrigger>
               </TabsList>
 
-              <AnimatePresence mode="wait">
-                <TabsContent value="back" className="mt-4 sm:mt-6">
-                  {backImage && (
+              <TabsContent value="back" className="mt-4 sm:mt-6">
+                {backImage && (
+                  <AnimatePresence mode="wait">
                     <motion.div
+                      key="back-image"
                       className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
                       whileHover={{
                         scale: 1.03,
@@ -168,12 +169,15 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </motion.div>
                     </motion.div>
-                  )}
-                </TabsContent>
+                  </AnimatePresence>
+                )}
+              </TabsContent>
 
-                <TabsContent value="front" className="mt-4 sm:mt-6">
-                  {frontImage && (
+              <TabsContent value="front" className="mt-4 sm:mt-6">
+                {frontImage && (
+                  <AnimatePresence mode="wait">
                     <motion.div
+                      key="front-image"
                       className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
                       whileHover={{
                         scale: 1.03,
@@ -225,9 +229,9 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </motion.div>
                     </motion.div>
-                  )}
-                </TabsContent>
-              </AnimatePresence>
+                  </AnimatePresence>
+                )}
+              </TabsContent>
             </Tabs>
           </motion.div>
 
