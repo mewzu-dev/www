@@ -181,11 +181,11 @@ export function Hero() {
 
         {/* Scroll indicator - Enhanced with glow */}
         {showAnimations && (
-          <div className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 hidden sm:flex">
-            <div className="flex flex-col items-center gap-3 relative">
+          <div className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 flex">
+            <div className="flex flex-col items-center gap-2 sm:gap-3 relative">
               {showAnimations ? (
                 <motion.span
-                  className="text-xs font-mono-alt tracking-widest uppercase"
+                  className="text-xs font-mono-alt tracking-widest uppercase text-foreground/70 drop-shadow-lg"
                   initial={false}
                   animate={{
                     opacity: [0.5, 1, 0.5],
@@ -199,12 +199,12 @@ export function Hero() {
                   {t("scroll")}
                 </motion.span>
               ) : (
-                <span className="text-xs font-mono-alt tracking-widest uppercase">
+                <span className="text-xs font-mono-alt tracking-widest uppercase text-foreground/70 drop-shadow-lg">
                   {t("scroll")}
                 </span>
               )}
 
-              <div className="relative h-12 w-6 rounded-full border border-foreground/20 flex items-start justify-center p-1.5 overflow-hidden">
+              <div className="relative h-12 w-6 rounded-full border-2 border-foreground/30 bg-background/50 backdrop-blur-sm flex items-start justify-center p-1.5 overflow-hidden shadow-lg">
                 {/* Animated dot */}
                 {showAnimations ? (
                   <motion.div
