@@ -43,7 +43,7 @@ export function MobileNav() {
               {t(item.key)}
             </Link>
           ))}
-          <div className="mt-4 pt-4 border-t border-foreground/10">
+          <div className="mt-4 pt-4 border-t border-foreground/10 flex justify-start">
             <LanguageSwitcher />
           </div>
         </nav>

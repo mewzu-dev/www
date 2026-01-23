@@ -29,8 +29,8 @@ export function Footer() {
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-natural/30 rounded-full blur-3xl -z-10" />
 
-      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-12 mb-12 sm:mb-16">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 md:gap-12 mb-8 sm:mb-12 md:mb-16">
           {/* Brand section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
