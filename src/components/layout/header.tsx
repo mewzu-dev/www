@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 export function Header() {
   const t = useTranslations("common.nav");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [announcementHeight, setAnnouncementHeight] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,13 +23,43 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Detect announcement banner height
+  useEffect(() => {
+    const updateAnnouncementHeight = () => {
+      const banner = document.querySelector("[data-announcement-banner]");
+      if (banner) {
+        setAnnouncementHeight(banner.clientHeight);
+      } else {
+        setAnnouncementHeight(0);
+      }
+    };
+
+    updateAnnouncementHeight();
+
+    // Watch for DOM changes (announcement dismiss, etc.)
+    const observer = new MutationObserver(updateAnnouncementHeight);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Also watch for resize
+    window.addEventListener("resize", updateAnnouncementHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateAnnouncementHeight);
+    };
+  }, []);
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-background/80 backdrop-blur-xl border-b border-foreground/10"
           : "bg-transparent"
       }`}
+      style={{ top: `${announcementHeight}px` }}
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex h-16 sm:h-20 items-center justify-between">
