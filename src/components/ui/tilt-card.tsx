@@ -43,6 +43,11 @@ export function TiltCard({
 
   const glareX = useTransform(mouseX, [0, 1], ["0%", "100%"]);
   const glareY = useTransform(mouseY, [0, 1], ["0%", "100%"]);
+  const glareBackground = useTransform(
+    [glareX, glareY],
+    ([x, y]) =>
+      `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.15) 0%, transparent 50%)`,
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current || shouldReduceMotion) return;
@@ -82,11 +87,7 @@ export function TiltCard({
         <motion.div
           className="absolute inset-0 pointer-events-none rounded-inherit overflow-hidden"
           style={{
-            background: useTransform(
-              [glareX, glareY],
-              ([x, y]) =>
-                `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.15) 0%, transparent 50%)`,
-            ),
+            background: glareBackground,
           }}
         />
       )}
