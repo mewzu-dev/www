@@ -131,10 +131,10 @@ export function Hero() {
         </div>
 
         {/* Main heading with text reveal animation */}
-        <div className="space-y-2 sm:space-y-3 md:space-y-4 mb-8 sm:mb-10 md:mb-12 max-w-6xl px-4">
+        <div className="space-y-2 sm:space-y-3 md:space-y-4 mb-6 sm:mb-8 md:mb-10 max-w-6xl px-4">
           {words.map((word, index) => (
             <div key={index}>
-              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display font-bold tracking-tighter leading-none">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-bold tracking-tighter leading-none">
                 {word}
               </h1>
             </div>
@@ -142,8 +142,8 @@ export function Hero() {
         </div>
 
         {/* Description with text reveal */}
-        <div className="max-w-2xl mb-8 sm:mb-10 md:mb-12 px-6 sm:px-4">
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed">
+        <div className="max-w-2xl mb-6 sm:mb-8 md:mb-10 px-6 sm:px-4">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed">
             {t("description")}
             <span className="text-foreground font-medium">
               {t("descriptionHighlight")}
@@ -153,7 +153,7 @@ export function Hero() {
         </div>
 
         {/* CTA Buttons with magnetic hover */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 sm:mb-16 px-6 sm:px-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 px-6 sm:px-4 w-full sm:w-auto">
           <MagneticHover strength={0.15}>
             <Button
               asChild
@@ -181,7 +181,7 @@ export function Hero() {
 
         {/* Scroll indicator - Enhanced with glow */}
         {showAnimations && (
-          <div className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 flex">
+          <div className="absolute bottom-8 sm:bottom-16 left-1/2 -translate-x-1/2 flex">
             <div className="flex flex-col items-center gap-2 sm:gap-3 relative">
               {showAnimations ? (
                 <motion.span
