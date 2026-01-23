@@ -55,7 +55,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <PageContentWrapper className="min-h-screen pt-8 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
       {/* Morphing background */}
       <MorphingBackground
         colors={["bg-brand-orange/10", "bg-brand-blue/10", "bg-brand-cream/20"]}

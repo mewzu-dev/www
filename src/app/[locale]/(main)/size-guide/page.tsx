@@ -58,7 +58,7 @@ export default function SizeGuidePage() {
   ];
 
   return (
-    <PageContentWrapper className="min-h-screen pt-8 pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pb-24 relative overflow-hidden">
       {/* Morphing background */}
       <MorphingBackground
         colors={["bg-brand-green/10", "bg-brand-cream/20", "bg-brand-blue/10"]}

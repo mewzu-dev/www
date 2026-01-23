@@ -38,7 +38,7 @@ export default function ShippingPage() {
   ];
 
   return (
-    <PageContentWrapper className="min-h-screen pt-8 pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pb-24 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-20 left-0 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-3xl -z-10" />
 

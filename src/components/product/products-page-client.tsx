@@ -14,7 +14,7 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
   const t = useTranslations("products.listing");
 
   return (
-    <PageContentWrapper className="min-h-screen pt-8 pb-24">
+    <PageContentWrapper className="min-h-screen pb-24">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

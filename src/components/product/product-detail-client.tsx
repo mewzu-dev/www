@@ -43,7 +43,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   }, []);
 
   return (
-    <PageContentWrapper className="min-h-screen pt-8 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
       {/* Animated background decoration with parallax */}
       <motion.div
         className="absolute top-40 right-0 w-[600px] h-[600px] bg-brand-cream/20 rounded-full blur-3xl -z-10"

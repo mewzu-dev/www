@@ -57,7 +57,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <PageContentWrapper className="min-h-screen pt-8 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
       {/* Morphing background */}
       <MorphingBackground
         colors={["bg-brand-cream/30", "bg-brand-blue/10", "bg-brand-orange/10"]}
