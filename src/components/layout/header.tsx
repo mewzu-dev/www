@@ -6,54 +6,51 @@ import { navigationItems } from "@/lib/data/navigation";
 import { MobileNav } from "./mobile-nav";
 import { LanguageSwitcher } from "./language-switcher";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { throttle } from "@/lib/utils";
+import { useLayout } from "./layout-context";
 
 export function Header() {
   const t = useTranslations("common.nav");
   const [isScrolled, setIsScrolled] = useState(false);
-  const [announcementHeight, setAnnouncementHeight] = useState(0);
+  const { announcementHeight, setHeaderHeight } = useLayout();
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Update header height after mount and when announcement changes
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (headerRef.current) {
+        setHeaderHeight(headerRef.current.clientHeight);
+      }
+    };
+
+    updateHeaderHeight();
+
+    // Multiple measurements to catch after layout settles
+    const timeout1 = setTimeout(updateHeaderHeight, 50);
+    const timeout2 = setTimeout(updateHeaderHeight, 100);
+    const timeout3 = setTimeout(updateHeaderHeight, 200);
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
+    };
+  }, [setHeaderHeight, announcementHeight]); // Re-measure when announcement height changes
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       setIsScrolled(window.scrollY > 50);
-    };
+    }, 100);
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Detect announcement banner height
-  useEffect(() => {
-    const updateAnnouncementHeight = () => {
-      const banner = document.querySelector("[data-announcement-banner]");
-      if (banner) {
-        setAnnouncementHeight(banner.clientHeight);
-      } else {
-        setAnnouncementHeight(0);
-      }
-    };
-
-    updateAnnouncementHeight();
-
-    // Watch for DOM changes (announcement dismiss, etc.)
-    const observer = new MutationObserver(updateAnnouncementHeight);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    // Also watch for resize
-    window.addEventListener("resize", updateAnnouncementHeight);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", updateAnnouncementHeight);
-    };
-  }, []);
-
   return (
     <header
+      ref={headerRef}
       className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-background/80 backdrop-blur-xl border-b border-foreground/10"
