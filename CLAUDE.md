@@ -2,13 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Documentation Structure
+
+This project has organized documentation:
+
+- **[README.md](./README.md)** - Project overview, quick start, and setup instructions (for developers)
+- **[USER_GUIDE.md](./USER_GUIDE.md)** - Comprehensive guide for non-technical users managing content
+- **[DEVELOPER.md](./DEVELOPER.md)** - Technical reference, architecture, troubleshooting, and advanced topics
+- **CLAUDE.md** (this file) - Instructions for AI coding assistants
+
+When users ask about:
+- Setup, installation, environment → Direct to **README.md**
+- Managing products/announcements → Direct to **USER_GUIDE.md**
+- Architecture, schemas, performance → Direct to **DEVELOPER.md**
+
 ## Project Overview
 
-Mewzu is a Next.js application built with TypeScript, Tailwind CSS, and the App Router architecture.
+Mewzu is a Next.js e-commerce application for custom cat-themed t-shirts with Sanity.io headless CMS.
 
 **Tech Stack:**
 - Framework: Next.js 16 (App Router)
 - Language: TypeScript (strict mode)
+- CMS: Sanity.io (headless, embedded Studio at `/admin`)
 - Styling: Tailwind CSS v4
 - UI Components: shadcn/ui (preferred)
 - Icons: lucide-react
@@ -145,9 +160,56 @@ import { cn } from '@/lib/utils'
 
 ## Key Files
 
-- `next.config.ts` - Next.js configuration
+- `next.config.ts` - Next.js configuration (includes Sanity image domains)
+- `sanity.config.ts` - Sanity Studio configuration
 - `tailwind.config.ts` - Tailwind CSS configuration (v4 syntax)
 - `postcss.config.mjs` - PostCSS configuration (uses `@tailwindcss/postcss`)
 - `tsconfig.json` - TypeScript configuration
 - `.eslintrc.json` - ESLint rules
-- `components.json` - shadcn/ui configuration (created when first component is added)
+- `components.json` - shadcn/ui configuration
+- `.env.local` - Environment variables (never commit this)
+
+## CMS Integration
+
+### Sanity Content Types
+
+1. **Product** - T-shirt products with images, colors, sizes, marketplace links
+2. **Announcement** - Banners and modals for site-wide announcements
+
+### Key Sanity Files
+
+- `src/sanity/schemas/` - Content schemas (product, announcement)
+- `src/sanity/queries.ts` - GROQ queries for data fetching
+- `src/sanity/lib.ts` - Data fetching functions
+- `src/sanity/client.ts` - Sanity client configuration
+- `src/app/admin/[[...index]]/page.tsx` - Embedded Studio route
+
+### Data Fetching Pattern
+
+```typescript
+// Server Component
+import { getProducts } from '@/sanity/lib'
+
+export const revalidate = 60 // ISR cache
+
+export default async function ProductsPage() {
+  const products = await getProducts()
+  return <ProductGrid products={products} />
+}
+```
+
+### Important Notes
+
+- All content is managed via Sanity Studio at `/admin` route
+- Business partner manages content (no developer needed)
+- ISR caching: 60-second revalidation
+- Never hardcode content - always fetch from Sanity
+- Images served from Sanity CDN
+
+## Content Management
+
+When working with products or announcements:
+1. **Never hardcode content** - Always fetch from Sanity
+2. **Use existing queries** - Located in `src/sanity/queries.ts`
+3. **Follow ISR pattern** - Set `revalidate = 60` on pages
+4. **Type safety** - Use types from `src/types/index.ts`

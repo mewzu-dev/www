@@ -3,11 +3,33 @@
 **Welcome!** This guide will help you manage products and announcements on the Mewzu website without any technical knowledge.
 
 ## Table of Contents
-1. [Getting Started](#getting-started)
-2. [Managing Products](#managing-products)
-3. [Managing Announcements](#managing-announcements)
-4. [Tips & Best Practices](#tips--best-practices)
-5. [Common Questions](#common-questions)
+1. [First-Time Setup](#first-time-setup)
+2. [Getting Started](#getting-started)
+3. [Managing Products](#managing-products)
+4. [Managing Announcements](#managing-announcements)
+5. [Tips & Best Practices](#tips--best-practices)
+6. [Common Questions](#common-questions)
+
+---
+
+## First-Time Setup
+
+**Note**: Your developer should complete this section during initial setup. Once done, you can skip to [Getting Started](#getting-started).
+
+### What You Need
+
+Your developer will invite you to the Sanity CMS system. You'll receive an email invitation to:
+- Create your Sanity account
+- Access the admin panel at `/admin`
+
+### Accepting Your Invitation
+
+1. Check your email for invitation from Sanity
+2. Click the invitation link
+3. Create your account (or log in if you already have one)
+4. You'll be automatically added to the Mewzu project
+
+That's it! You're ready to manage the website.
 
 ---
 
