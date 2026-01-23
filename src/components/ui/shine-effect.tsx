@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useMounted } from "@/hooks/use-mounted";
 
 interface ShineEffectProps {
   children: React.ReactNode;
@@ -14,12 +15,17 @@ export function ShineEffect({
   children,
   className = "",
   duration = 1.5,
-  delay = 0
+  delay = 0,
 }: ShineEffectProps) {
   const shouldReduceMotion = useReducedMotion();
+  const mounted = useMounted();
 
-  if (shouldReduceMotion) {
-    return <div className={cn("relative overflow-hidden", className)}>{children}</div>;
+  if (shouldReduceMotion || !mounted) {
+    return (
+      <div className={cn("relative overflow-hidden", className)}>
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -36,7 +42,8 @@ export function ShineEffect({
           ease: [0.22, 1, 0.36, 1],
         }}
         style={{
-          background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
           width: "50%",
         }}
       />

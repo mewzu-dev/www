@@ -19,7 +19,7 @@ export function SmoothReveal({
   delay = 0,
   direction = "up",
   duration = 0.8,
-  once = true
+  once = true,
 }: SmoothRevealProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, margin: "-100px" });

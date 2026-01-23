@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useReducedMotion,
+} from "framer-motion";
+import { useMounted } from "@/hooks/use-mounted";
 
 interface MagneticHoverProps {
   children: React.ReactNode;
@@ -12,11 +18,12 @@ interface MagneticHoverProps {
 export function MagneticHover({
   children,
   strength = 0.3,
-  className = ""
+  className = "",
 }: MagneticHoverProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const mounted = useMounted();
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -45,7 +52,8 @@ export function MagneticHover({
     y.set(0);
   };
 
-  if (shouldReduceMotion) {
+  // Always render a plain div on server and when motion should be reduced
+  if (!mounted || shouldReduceMotion) {
     return <div className={className}>{children}</div>;
   }
 

@@ -7,6 +7,7 @@ import { Sparkles, ArrowUpRight } from "lucide-react";
 import { TiltCard } from "@/components/ui/tilt-card";
 import { ShineEffect } from "@/components/ui/shine-effect";
 import type { Product } from "@/types";
+import { useMounted } from "@/hooks/use-mounted";
 
 interface ProductCardProps {
   product: Product;
@@ -19,11 +20,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const frontImage = product.images.find((img) => img.view === "front");
   const shouldReduceMotion = useReducedMotion();
   const reduceMotion = shouldReduceMotion === true;
+  const mounted = useMounted();
+  const showAnimations = mounted && !reduceMotion;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{
         duration: 0.8,
@@ -54,7 +57,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 </div>
 
                 {/* Front image (on hover) - Crossfade overlay */}
-                {frontImage && (
+                {frontImage && showAnimations && (
                   <motion.div
                     className="absolute inset-0"
                     initial={{ opacity: 0 }}
@@ -76,11 +79,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-background/30 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 {/* Featured badge */}
-                {product.featured && (
+                {product.featured && showAnimations && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
+                    initial={false}
                     className="absolute top-4 left-4 z-10"
                   >
                     <motion.div
@@ -103,26 +104,28 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 )}
 
                 {/* Hover arrow indicator */}
-                <motion.div
-                  className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-lg"
-                  initial={{ scale: 0.8, rotate: 0 }}
-                  whileHover={
-                    !reduceMotion
-                      ? {
-                          scale: 1.1,
-                          rotate: 45,
-                          transition: {
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 10,
-                          },
-                        }
-                      : undefined
-                  }
-                  transition={{ duration: 0.3 }}
-                >
-                  <ArrowUpRight className="h-5 w-5 text-foreground" />
-                </motion.div>
+                {showAnimations && (
+                  <motion.div
+                    className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-lg"
+                    initial={false}
+                    whileHover={
+                      !reduceMotion
+                        ? {
+                            scale: 1.1,
+                            rotate: 45,
+                            transition: {
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 10,
+                            },
+                          }
+                        : undefined
+                    }
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ArrowUpRight className="h-5 w-5 text-foreground" />
+                  </motion.div>
+                )}
               </div>
 
               {/* Content */}
@@ -139,47 +142,54 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
                 {/* Tags */}
                 <div className="flex gap-2 flex-wrap pt-1">
-                  <motion.span
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-foreground/5 text-foreground/70 border border-foreground/10 transition-colors"
-                    whileHover={
-                      !reduceMotion
-                        ? {
-                            backgroundColor: "rgba(var(--foreground), 0.1)",
-                            borderColor: "rgba(var(--foreground), 0.2)",
-                            scale: 1.05,
-                          }
-                        : undefined
-                    }
-                    transition={{ duration: 0.2 }}
-                  >
-                    {product.scene}
-                  </motion.span>
-                  <motion.span
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-foreground/5 text-foreground/70 border border-foreground/10 transition-colors"
-                    whileHover={
-                      !reduceMotion
-                        ? {
-                            backgroundColor: "rgba(var(--foreground), 0.1)",
-                            borderColor: "rgba(var(--foreground), 0.2)",
-                            scale: 1.05,
-                          }
-                        : undefined
-                    }
-                    transition={{ duration: 0.2 }}
-                  >
-                    {product.baseColor}
-                  </motion.span>
+                  {showAnimations ? (
+                    <>
+                      <motion.span
+                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-foreground/5 text-foreground/70 border border-foreground/10 transition-colors"
+                        whileHover={{
+                          backgroundColor: "rgba(var(--foreground), 0.1)",
+                          borderColor: "rgba(var(--foreground), 0.2)",
+                          scale: 1.05,
+                        }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {product.scene}
+                      </motion.span>
+                      <motion.span
+                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-foreground/5 text-foreground/70 border border-foreground/10 transition-colors"
+                        whileHover={{
+                          backgroundColor: "rgba(var(--foreground), 0.1)",
+                          borderColor: "rgba(var(--foreground), 0.2)",
+                          scale: 1.05,
+                        }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {product.baseColor}
+                      </motion.span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-foreground/5 text-foreground/70 border border-foreground/10 transition-colors">
+                        {product.scene}
+                      </span>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-foreground/5 text-foreground/70 border border-foreground/10 transition-colors">
+                        {product.baseColor}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
               {/* Bottom accent line with reveal animation */}
-              <motion.div
-                className="h-1 bg-gradient-to-r from-transparent via-foreground/30 to-transparent"
-                initial={{ scaleX: 0, opacity: 0 }}
-                whileHover={{ scaleX: 1, opacity: 1 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                style={{ transformOrigin: "center" }}
-              />
+              {showAnimations && (
+                <motion.div
+                  className="h-1 bg-gradient-to-r from-transparent via-foreground/30 to-transparent"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  whileHover={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ transformOrigin: "center" }}
+                />
+              )}
             </div>
           </ShineEffect>
         </TiltCard>

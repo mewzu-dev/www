@@ -17,7 +17,7 @@ export function TextReveal({
   className = "",
   delay = 0,
   staggerDelay = 0.03,
-  once = true
+  once = true,
 }: TextRevealProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, margin: "-50px" });
@@ -48,7 +48,7 @@ export function TextReveal({
       filter: "blur(0px)",
       transition: {
         duration: shouldReduceMotion ? 0.2 : 0.6,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };

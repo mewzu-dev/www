@@ -1,8 +1,15 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useMounted } from "@/hooks/use-mounted";
 
 interface TiltCardProps {
   children: React.ReactNode;
@@ -15,17 +22,24 @@ export function TiltCard({
   children,
   className = "",
   tiltStrength = 15,
-  glareEffect = true
+  glareEffect = true,
 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  const mounted = useMounted();
 
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
 
   const springConfig = { stiffness: 300, damping: 30 };
-  const rotateX = useSpring(useTransform(mouseY, [0, 1], [tiltStrength, -tiltStrength]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-tiltStrength, tiltStrength]), springConfig);
+  const rotateX = useSpring(
+    useTransform(mouseY, [0, 1], [tiltStrength, -tiltStrength]),
+    springConfig,
+  );
+  const rotateY = useSpring(
+    useTransform(mouseX, [0, 1], [-tiltStrength, tiltStrength]),
+    springConfig,
+  );
 
   const glareX = useTransform(mouseX, [0, 1], ["0%", "100%"]);
   const glareY = useTransform(mouseY, [0, 1], ["0%", "100%"]);
@@ -46,7 +60,7 @@ export function TiltCard({
     mouseY.set(0.5);
   };
 
-  if (shouldReduceMotion) {
+  if (shouldReduceMotion || !mounted) {
     return <div className={cn("relative", className)}>{children}</div>;
   }
 
@@ -71,7 +85,7 @@ export function TiltCard({
             background: useTransform(
               [glareX, glareY],
               ([x, y]) =>
-                `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.15) 0%, transparent 50%)`
+                `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.15) 0%, transparent 50%)`,
             ),
           }}
         />

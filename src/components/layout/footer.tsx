@@ -23,7 +23,7 @@ export function Footer() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.6 }}
             className="md:col-span-5 space-y-4 sm:space-y-6"
           >
@@ -82,7 +82,7 @@ export function Footer() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6, delay: 0.1 }}
               className="space-y-3 sm:space-y-4"
             >
@@ -108,7 +108,7 @@ export function Footer() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-3 sm:space-y-4"
             >
@@ -134,7 +134,7 @@ export function Footer() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6, delay: 0.3 }}
               className="space-y-3 sm:space-y-4 col-span-2 md:col-span-1"
             >
@@ -153,7 +153,7 @@ export function Footer() {
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "0px 0px 200px 0px" }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-8 flex flex-col md:flex-row justify-between items-center gap-4"
         >
