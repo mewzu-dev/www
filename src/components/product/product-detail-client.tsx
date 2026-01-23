@@ -9,13 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ruler, Palette, Sparkles, BookOpen, Package } from "lucide-react";
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import type { Product } from "@/types";
@@ -112,124 +106,113 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
               <TabsContent value="back" className="mt-4 sm:mt-6">
                 {backImage && (
-                  <AnimatePresence mode="wait">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
+                    whileHover={{
+                      scale: 1.03,
+                      rotateY: 5,
+                      rotateX: 5,
+                      transition: {
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      },
+                    }}
+                    style={{
+                      transformStyle: "preserve-3d",
+                      perspective: "1000px",
+                    }}
+                  >
+                    {/* Animated border glow */}
                     <motion.div
-                      key="back-image"
-                      className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
-                      whileHover={{
-                        scale: 1.03,
-                        rotateY: 5,
-                        rotateX: 5,
-                        transition: {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        },
+                      className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100"
+                      animate={{
+                        background: [
+                          "linear-gradient(0deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(90deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(180deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(270deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(360deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                        ],
                       }}
-                      style={{
-                        transformStyle: "preserve-3d",
-                        perspective: "1000px",
+                      transition={{
+                        duration: 3,
+                        ease: "linear",
+                        repeat: Infinity,
                       }}
-                    >
-                      {/* Animated border glow */}
-                      <motion.div
-                        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100"
-                        animate={{
-                          background: [
-                            "linear-gradient(0deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(90deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(180deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(270deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(360deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                          ],
-                        }}
-                        transition={{
-                          duration: 3,
-                          ease: "linear",
-                          repeat: Infinity,
-                        }}
-                      />
+                    />
 
-                      <motion.div
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative z-10"
-                      >
-                        <Image
-                          src={backImage.url}
-                          alt={backImage.alt}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          priority
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                        {/* Hover gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      </motion.div>
-                    </motion.div>
-                  </AnimatePresence>
+                    <div className="relative z-10 w-full h-full">
+                      <Image
+                        src={backImage.url}
+                        alt={backImage.alt}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        priority
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      {/* Hover gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </div>
+                  </motion.div>
                 )}
               </TabsContent>
 
               <TabsContent value="front" className="mt-4 sm:mt-6">
                 {frontImage && (
-                  <AnimatePresence mode="wait">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
+                    whileHover={{
+                      scale: 1.03,
+                      rotateY: -5,
+                      rotateX: 5,
+                      transition: {
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      },
+                    }}
+                    style={{
+                      transformStyle: "preserve-3d",
+                      perspective: "1000px",
+                    }}
+                  >
+                    {/* Animated border glow */}
                     <motion.div
-                      key="front-image"
-                      className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
-                      whileHover={{
-                        scale: 1.03,
-                        rotateY: -5,
-                        rotateX: 5,
-                        transition: {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        },
+                      className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100"
+                      animate={{
+                        background: [
+                          "linear-gradient(0deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(90deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(180deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(270deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          "linear-gradient(360deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                        ],
                       }}
-                      style={{
-                        transformStyle: "preserve-3d",
-                        perspective: "1000px",
+                      transition={{
+                        duration: 3,
+                        ease: "linear",
+                        repeat: Infinity,
                       }}
-                    >
-                      {/* Animated border glow */}
-                      <motion.div
-                        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100"
-                        animate={{
-                          background: [
-                            "linear-gradient(0deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(90deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(180deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(270deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                            "linear-gradient(360deg, transparent, rgba(var(--foreground), 0.3), transparent)",
-                          ],
-                        }}
-                        transition={{
-                          duration: 3,
-                          ease: "linear",
-                          repeat: Infinity,
-                        }}
+                    />
+                    <div className="relative z-10 w-full h-full">
+                      <Image
+                        src={frontImage.url}
+                        alt={frontImage.alt}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                       />
-                      <motion.div
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        <Image
-                          src={frontImage.url}
-                          alt={frontImage.alt}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                        {/* Hover gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      </motion.div>
-                    </motion.div>
-                  </AnimatePresence>
+                      {/* Hover gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </div>
+                  </motion.div>
                 )}
               </TabsContent>
             </Tabs>
