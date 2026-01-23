@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__acp__Write",
+      "mcp__acp__Bash",
+      "mcp__acp__Edit",
+      "mcp__railway__check-railway-status",
+      "mcp__vercel__list_teams",
+      "mcp__vercel__deploy_to_vercel",
+      "mcp__vercel__get_project"
+    ]
+  }
+}
