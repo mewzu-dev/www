@@ -8,28 +8,16 @@ import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
-const footerLinks = {
-  shop: [
-    { key: "allProducts", href: "/products" },
-    { key: "sizeGuide", href: "/size-guide" },
-    { key: "shippingInfo", href: "/shipping" },
-  ],
-  about: [
-    { key: "ourStory", href: "/about" },
-    { key: "contactUs", href: "/contact" },
-  ],
-};
-
 export function Footer() {
   const t = useTranslations("common.footer");
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-foreground/10 bg-background relative overflow-hidden">
+    <footer className="border-t border-foreground/10 bg-background relative overflow-hidden pb-safe">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-natural/30 rounded-full blur-3xl -z-10" />
 
-      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 md:gap-12 mb-8 sm:mb-12 md:mb-16">
           {/* Brand section */}
           <motion.div
@@ -102,7 +90,7 @@ export function Footer() {
                 {t("shop.title")}
               </h4>
               <ul className="space-y-2 sm:space-y-3">
-                {footerLinks.shop.map((link) => (
+                {siteConfig.footerLinks.shop.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
@@ -128,7 +116,7 @@ export function Footer() {
                 {t("about.title")}
               </h4>
               <ul className="space-y-2 sm:space-y-3">
-                {footerLinks.about.map((link) => (
+                {siteConfig.footerLinks.about.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}

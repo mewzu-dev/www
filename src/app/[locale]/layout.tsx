@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { siteConfig } from "@/lib/data/site-config";
 import { Playfair_Display, Space_Grotesk, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -24,6 +24,14 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: {
@@ -106,7 +114,9 @@ export default async function LocaleLayout({
         className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable} font-sans antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <div className="relative flex min-h-screen flex-col">{children}</div>
+          <div className="relative flex min-h-[100dvh] flex-col">
+            {children}
+          </div>
         </NextIntlClientProvider>
       </body>
     </html>

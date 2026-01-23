@@ -152,6 +152,15 @@
 }
 
 @layer utilities {
+  /* Safe area utilities for mobile devices */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
   /* Font utilities */
   .font-display {
     font-family: var(--font-playfair), Georgia, serif;
