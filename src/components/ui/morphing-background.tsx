@@ -50,7 +50,7 @@ export function MorphingBackground({
           scale: [1, 1.1, 1],
         }}
         transition={{
-          duration: 45,
+          duration: 30,
           repeat: Infinity,
           ease: "easeInOut",
           repeatType: "loop",
@@ -70,7 +70,7 @@ export function MorphingBackground({
           scale: [1, 0.9, 1],
         }}
         transition={{
-          duration: 50,
+          duration: 35,
           repeat: Infinity,
           ease: "easeInOut",
           delay: 5,
@@ -91,7 +91,7 @@ export function MorphingBackground({
           scale: [1, 1.05, 1],
         }}
         transition={{
-          duration: 60,
+          duration: 40,
           repeat: Infinity,
           ease: "easeInOut",
           delay: 10,
