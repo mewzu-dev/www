@@ -46,23 +46,22 @@ export function MeasurementGuideCard({
 
           {/* Icon container */}
           <motion.div
-            className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center"
+            className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center group/icon"
             whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <Icon className="w-7 h-7 text-foreground/70 relative z-10" />
 
-            {/* Animated background pulse */}
+            {/* Single pulse on hover only */}
             <motion.div
-              className="absolute inset-0 rounded-2xl bg-foreground/10"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0, 0.5],
+              className="absolute inset-0 rounded-2xl bg-foreground/10 opacity-0 group-hover/icon:opacity-100"
+              whileHover={{
+                scale: [1, 1.3],
+                opacity: [0.5, 0],
               }}
               transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
+                duration: 0.6,
+                ease: "easeOut",
               }}
             />
           </motion.div>

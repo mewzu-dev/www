@@ -26,10 +26,13 @@ export function Hero() {
       className="relative min-h-[100vh] overflow-hidden bg-background"
     >
       {/* Animated background elements */}
-      <motion.div className="absolute inset-0 z-0" style={{ y }}>
-        <div className="absolute top-20 right-20 w-72 h-72 bg-brand-blue/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-green/5 rounded-full blur-3xl" />
+      <motion.div
+        className="absolute inset-0 z-0 will-change-transform"
+        style={{ y, willChange: "transform" }}
+      >
+        <div className="absolute top-20 right-20 w-72 h-72 bg-brand-blue/10 rounded-full blur-3xl will-change-transform" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl will-change-transform" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-green/5 rounded-full blur-3xl will-change-transform" />
       </motion.div>
 
       <motion.div
@@ -113,23 +116,61 @@ export function Hero() {
           </Button>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - Enhanced */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.8 }}
           className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 hidden sm:flex"
         >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2"
-          >
-            <span className="text-xs font-mono-alt tracking-widest uppercase">
+          <div className="flex flex-col items-center gap-3 relative">
+            <motion.span
+              className="text-xs font-mono-alt tracking-widest uppercase"
+              animate={{
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                ease: "easeInOut",
+                repeat: Infinity,
+              }}
+            >
               {t("scroll")}
-            </span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-foreground to-transparent" />
-          </motion.div>
+            </motion.span>
+
+            <div className="relative h-12 w-6 rounded-full border border-foreground/20 flex items-start justify-center p-1.5">
+              {/* Animated dot */}
+              <motion.div
+                className="w-1.5 h-1.5 rounded-full bg-foreground"
+                animate={{
+                  y: [0, 28, 0],
+                  opacity: [1, 0.3, 1],
+                }}
+                transition={{
+                  duration: 1.8,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+              />
+
+              {/* Glow effect */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                animate={{
+                  boxShadow: [
+                    "0 0 0px rgba(var(--foreground), 0)",
+                    "0 0 10px rgba(var(--foreground), 0.3)",
+                    "0 0 0px rgba(var(--foreground), 0)",
+                  ],
+                }}
+                transition={{
+                  duration: 1.8,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+              />
+            </div>
+          </div>
         </motion.div>
       </motion.div>
     </section>

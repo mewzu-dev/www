@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, type ReactNode } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 import { RevealCard } from "@/components/ui/reveal-card";
 import { type LucideIcon } from "lucide-react";
 
@@ -20,36 +20,45 @@ export function InteractiveSection({
 }: InteractiveSectionProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const shouldReduceMotion = useReducedMotion();
+  const reduceMotion = shouldReduceMotion === true;
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : 60 }}
+      animate={
+        isInView
+          ? { opacity: 1, y: 0 }
+          : { opacity: 0, y: reduceMotion ? 0 : 60 }
+      }
       transition={{
         duration: 0.8,
-        delay: index * 0.1,
+        delay: reduceMotion ? 0 : index * 0.1,
         ease: [0.22, 1, 0.36, 1],
       }}
+      style={{ willChange: "opacity, transform" }}
     >
       <RevealCard className="group">
         <div className="p-8 sm:p-10 md:p-12 space-y-6">
           {/* Icon and title */}
           <div className="flex items-start gap-5">
             <motion.div
-              className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center"
-              whileHover={{ scale: 1.1, rotate: 5 }}
+              className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center will-change-transform"
+              whileHover={reduceMotion ? {} : { scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               <Icon className="w-8 h-8 sm:w-9 sm:h-9 text-foreground/70" />
 
               {/* Pulse effect */}
-              <motion.div
-                className="absolute inset-0 rounded-2xl bg-foreground/5"
-                initial={{ scale: 1, opacity: 0 }}
-                whileHover={{ scale: 1.4, opacity: 0 }}
-                transition={{ duration: 0.6 }}
-              />
+              {!reduceMotion && (
+                <motion.div
+                  className="absolute inset-0 rounded-2xl bg-foreground/5"
+                  initial={{ scale: 1, opacity: 0 }}
+                  whileHover={{ scale: 1.4, opacity: 0 }}
+                  transition={{ duration: 0.6 }}
+                />
+              )}
             </motion.div>
 
             <div className="flex-1">
@@ -64,13 +73,15 @@ export function InteractiveSection({
             {content.map((paragraph, idx) => (
               <motion.p
                 key={idx}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: reduceMotion ? 0 : -20 }}
                 animate={
-                  isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
+                  isInView
+                    ? { opacity: 1, x: 0 }
+                    : { opacity: 0, x: reduceMotion ? 0 : -20 }
                 }
                 transition={{
                   duration: 0.6,
-                  delay: index * 0.1 + idx * 0.1,
+                  delay: reduceMotion ? 0 : index * 0.1 + idx * 0.1,
                 }}
                 className="text-base sm:text-lg md:text-xl leading-relaxed"
               >
@@ -81,10 +92,13 @@ export function InteractiveSection({
 
           {/* Decorative line */}
           <motion.div
-            className="h-[1px] bg-gradient-to-r from-foreground/20 via-foreground/10 to-transparent"
+            className="h-[1px] bg-gradient-to-r from-foreground/20 via-foreground/10 to-transparent will-change-transform"
             initial={{ scaleX: 0 }}
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ duration: 0.8, delay: index * 0.1 + 0.3 }}
+            transition={{
+              duration: 0.8,
+              delay: reduceMotion ? 0 : index * 0.1 + 0.3,
+            }}
             style={{ originX: 0 }}
           />
         </div>

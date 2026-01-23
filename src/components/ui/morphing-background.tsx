@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface MorphingBackgroundProps {
   colors?: string[];
@@ -12,63 +11,91 @@ export function MorphingBackground({
   colors = ["bg-brand-blue/10", "bg-brand-orange/10", "bg-brand-green/10"],
   className = "",
 }: MorphingBackgroundProps) {
-  const [mounted, setMounted] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  const reduceMotion = shouldReduceMotion === true;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // If reduced motion is preferred, use static blobs
+  if (reduceMotion) {
+    return (
+      <div className={`absolute inset-0 -z-10 overflow-hidden ${className}`}>
+        <div
+          className={`absolute w-[500px] h-[500px] ${colors[0]} rounded-full blur-3xl`}
+          style={{ left: "20%", top: "10%" }}
+        />
+        <div
+          className={`absolute w-[600px] h-[600px] ${colors[1]} rounded-full blur-3xl`}
+          style={{ left: "70%", top: "60%" }}
+        />
+        <div
+          className={`absolute w-[400px] h-[400px] ${colors[2]} rounded-full blur-3xl`}
+          style={{ left: "50%", top: "80%" }}
+        />
+      </div>
+    );
+  }
 
-  if (!mounted) return null;
-
+  // Optimized animation: fewer keyframes, longer duration, GPU-accelerated transforms only
   return (
     <div className={`absolute inset-0 -z-10 overflow-hidden ${className}`}>
-      {/* Blob 1 */}
+      {/* Blob 1 - Simplified animation */}
       <motion.div
         className={`absolute w-[500px] h-[500px] ${colors[0]} rounded-full blur-3xl`}
-        initial={{ x: "20%", y: "10%" }}
+        style={{
+          left: "20%",
+          top: "10%",
+        }}
         animate={{
-          x: ["20%", "80%", "20%"],
-          y: ["10%", "70%", "10%"],
-          scale: [1, 1.2, 0.8, 1],
+          x: ["0%", "60%", "0%"],
+          y: ["0%", "60%", "0%"],
+          scale: [1, 1.1, 1],
         }}
         transition={{
-          duration: 20,
+          duration: 30,
           repeat: Infinity,
           ease: "easeInOut",
+          repeatType: "loop",
         }}
       />
 
-      {/* Blob 2 */}
+      {/* Blob 2 - Simplified animation with delay */}
       <motion.div
         className={`absolute w-[600px] h-[600px] ${colors[1]} rounded-full blur-3xl`}
-        initial={{ x: "70%", y: "60%" }}
+        style={{
+          left: "70%",
+          top: "60%",
+        }}
         animate={{
-          x: ["70%", "10%", "70%"],
-          y: ["60%", "20%", "60%"],
-          scale: [1, 0.8, 1.3, 1],
+          x: ["0%", "-60%", "0%"],
+          y: ["0%", "-40%", "0%"],
+          scale: [1, 0.9, 1],
         }}
         transition={{
-          duration: 25,
+          duration: 35,
           repeat: Infinity,
           ease: "easeInOut",
-          delay: 2,
+          delay: 5,
+          repeatType: "loop",
         }}
       />
 
-      {/* Blob 3 */}
+      {/* Blob 3 - Simplified animation with different delay */}
       <motion.div
         className={`absolute w-[400px] h-[400px] ${colors[2]} rounded-full blur-3xl`}
-        initial={{ x: "50%", y: "80%" }}
+        style={{
+          left: "50%",
+          top: "80%",
+        }}
         animate={{
-          x: ["50%", "30%", "50%"],
-          y: ["80%", "10%", "80%"],
-          scale: [1, 1.1, 0.9, 1],
+          x: ["0%", "-20%", "0%"],
+          y: ["0%", "-70%", "0%"],
+          scale: [1, 1.05, 1],
         }}
         transition={{
-          duration: 22,
+          duration: 40,
           repeat: Infinity,
           ease: "easeInOut",
-          delay: 4,
+          delay: 10,
+          repeatType: "loop",
         }}
       />
     </div>

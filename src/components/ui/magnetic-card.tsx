@@ -1,7 +1,13 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useRef, type ReactNode } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
+import { useRef, useCallback, type ReactNode } from "react";
 
 interface MagneticCardProps {
   children: ReactNode;
@@ -17,6 +23,8 @@ export function MagneticCard({
   scale = 1.02,
 }: MagneticCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const reduceMotion = shouldReduceMotion === true;
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -24,29 +32,40 @@ export function MagneticCard({
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7.5deg", "-7.5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7.5deg", "7.5deg"]);
+  const rotateX = useTransform(
+    mouseYSpring,
+    [-0.5, 0.5],
+    reduceMotion ? ["0deg", "0deg"] : ["7.5deg", "-7.5deg"],
+  );
+  const rotateY = useTransform(
+    mouseXSpring,
+    [-0.5, 0.5],
+    reduceMotion ? ["0deg", "0deg"] : ["-7.5deg", "7.5deg"],
+  );
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!ref.current || reduceMotion) return;
 
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+      const rect = ref.current.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
-    const xPct = (mouseX / width - 0.5) * intensity;
-    const yPct = (mouseY / height - 0.5) * intensity;
+      const xPct = (mouseX / width - 0.5) * intensity;
+      const yPct = (mouseY / height - 0.5) * intensity;
 
-    x.set(xPct);
-    y.set(yPct);
-  };
+      x.set(xPct);
+      y.set(yPct);
+    },
+    [intensity, reduceMotion, x, y],
+  );
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     x.set(0);
     y.set(0);
-  };
+  }, [x, y]);
 
   return (
     <motion.div
@@ -57,8 +76,9 @@ export function MagneticCard({
         rotateX,
         rotateY,
         transformStyle: "preserve-3d",
+        willChange: "transform",
       }}
-      whileHover={{ scale }}
+      whileHover={{ scale: reduceMotion ? 1 : scale }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className={className}
     >

@@ -9,7 +9,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Star, Sparkles } from "lucide-react";
 import type { Product } from "@/types";
 
@@ -22,17 +22,20 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const backImage =
     product.images.find((img) => img.view === "back") || product.images[0];
   const frontImage = product.images.find((img) => img.view === "front");
+  const shouldReduceMotion = useReducedMotion();
+  const reduceMotion = shouldReduceMotion === true;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{
         duration: 0.6,
-        delay: index * 0.1,
+        delay: reduceMotion ? 0 : index * 0.1,
         ease: [0.22, 1, 0.36, 1],
       }}
+      style={{ willChange: "opacity, transform" }}
     >
       <Link href={`/products/${product.slug}`} className="group block h-full">
         <Card className="overflow-hidden border border-foreground/5 hover:border-foreground/15 transition-all duration-500 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] hover:-translate-y-1 h-full flex flex-col">
@@ -66,14 +69,19 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
               {product.featured && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                  initial={{
+                    opacity: 0,
+                    scale: reduceMotion ? 1 : 0.8,
+                    y: reduceMotion ? 0 : -10,
+                  }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{
                     duration: 0.5,
-                    delay: 0.2,
+                    delay: reduceMotion ? 0 : 0.2,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10"
+                  style={{ willChange: "opacity, transform" }}
                 >
                   <Badge className="backdrop-blur-md bg-foreground/90 text-background border-0 shadow-lg shadow-foreground/20 hover:bg-foreground transition-colors pl-2 pr-3 py-1.5 gap-1.5">
                     <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />

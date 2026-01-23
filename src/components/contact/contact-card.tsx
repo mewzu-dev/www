@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, type LucideIcon } from "lucide-react";
 
@@ -24,9 +24,22 @@ export function ContactCard({
   external,
   index,
 }: ContactCardProps) {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [isHovered, setIsHovered] = useState(false);
+
+  // Mouse position tracking for glow effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothMouseX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const smoothMouseY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
 
   return (
     <motion.div
@@ -43,15 +56,45 @@ export function ContactCard({
     >
       <motion.div
         className="relative h-full rounded-3xl border border-foreground/10 bg-background/80 backdrop-blur-sm overflow-hidden group"
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: 1.02, rotateX: 2, rotateY: 2 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        onMouseMove={handleMouseMove}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        style={{
+          transformStyle: "preserve-3d",
+          perspective: "1000px",
+        }}
       >
-        {/* Animated gradient background */}
+        {/* Advanced glow effect following cursor - GPU accelerated */}
         <motion.div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(600px circle at ${smoothMouseX}px ${smoothMouseY}px, rgba(var(--foreground), 0.08), transparent 50%)`,
+            willChange: "background",
+          }}
+        />
+
+        {/* Shimmer effect on hover */}
+        <motion.div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100"
+          initial={false}
+          animate={
+            isHovered
+              ? {
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }
+              : {}
+          }
+          transition={{
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity,
+          }}
           style={{
             background:
-              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(var(--foreground), 0.06), transparent 40%)",
+              "linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.05) 50%, transparent 80%)",
+            backgroundSize: "200% 100%",
           }}
         />
 
@@ -59,29 +102,91 @@ export function ContactCard({
           {/* Header with icon and arrow */}
           <div className="flex items-start justify-between">
             <motion.div
-              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center relative"
-              whileHover={{ rotate: 5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-foreground/5 to-foreground/10 flex items-center justify-center relative overflow-hidden"
+              whileHover={{
+                scale: 1.1,
+                rotate: [0, -5, 5, -5, 0],
+                transition: {
+                  rotate: { duration: 0.5, ease: "easeInOut" },
+                  scale: { type: "spring", stiffness: 400, damping: 17 },
+                },
+              }}
+              style={{
+                transformStyle: "preserve-3d",
+              }}
             >
-              <Icon className="w-8 h-8 text-foreground/70 relative z-10" />
-
-              {/* Pulse effect */}
+              {/* Animated gradient background */}
               <motion.div
-                className="absolute inset-0 rounded-2xl bg-foreground/10"
+                className="absolute inset-0 opacity-0 group-hover:opacity-100"
                 animate={
                   isHovered
                     ? {
-                        scale: [1, 1.3, 1],
-                        opacity: [0.5, 0, 0.5],
+                        background: [
+                          "linear-gradient(45deg, rgba(var(--foreground), 0.05), rgba(var(--foreground), 0.15))",
+                          "linear-gradient(225deg, rgba(var(--foreground), 0.05), rgba(var(--foreground), 0.15))",
+                          "linear-gradient(45deg, rgba(var(--foreground), 0.05), rgba(var(--foreground), 0.15))",
+                        ],
                       }
                     : {}
                 }
                 transition={{
-                  duration: 1.5,
-                  repeat: isHovered ? Infinity : 0,
+                  duration: 2,
                   ease: "easeInOut",
+                  repeat: Infinity,
                 }}
               />
+
+              <motion.div
+                className="relative z-10"
+                animate={
+                  isHovered
+                    ? {
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 10, -10, 0],
+                      }
+                    : {}
+                }
+                transition={{
+                  duration: 2,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+              >
+                <Icon className="w-8 h-8 text-foreground/70" />
+              </motion.div>
+
+              {/* Multiple pulse rings */}
+              {isHovered && (
+                <>
+                  <motion.div
+                    className="absolute inset-0 rounded-2xl border-2 border-foreground/20"
+                    initial={{ scale: 1, opacity: 0.5 }}
+                    animate={{
+                      scale: 1.8,
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      ease: "easeOut",
+                      repeat: Infinity,
+                    }}
+                  />
+                  <motion.div
+                    className="absolute inset-0 rounded-2xl border-2 border-foreground/20"
+                    initial={{ scale: 1, opacity: 0.5 }}
+                    animate={{
+                      scale: 1.8,
+                      opacity: 0,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      ease: "easeOut",
+                      delay: 0.5,
+                      repeat: Infinity,
+                    }}
+                  />
+                </>
+              )}
             </motion.div>
 
             <motion.div

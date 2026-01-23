@@ -10,13 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ruler, Palette, Sparkles, BookOpen, Package } from "lucide-react";
 import {
   motion,
-  useScroll,
-  useTransform,
-  useSpring,
   AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
 } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useState, useEffect } from "react";
 import type { Product } from "@/types";
 
 interface ProductDetailClientProps {
@@ -29,30 +29,41 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   const frontImage = product.images.find((img) => img.view === "front");
   const [activeTab, setActiveTab] = useState("back");
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
+  // Smooth scroll-based parallax
+  const [scrollY, setScrollY] = useState(0);
+  const smoothScrollY = useSpring(scrollY, { stiffness: 100, damping: 30 });
+  const backgroundY = useTransform(smoothScrollY, [0, 500], [0, 150]);
+  const backgroundScale = useTransform(smoothScrollY, [0, 500], [1, 1.1]);
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
-  const imageScale = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    [0.95, 1, 0.98],
-  );
-  const springY = useSpring(imageY, { stiffness: 100, damping: 30 });
-  const springScale = useSpring(imageScale, { stiffness: 100, damping: 30 });
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 relative"
-    >
-      {/* Background decoration */}
+    <div className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
+      {/* Animated background decoration with parallax */}
       <motion.div
         className="absolute top-40 right-0 w-[600px] h-[600px] bg-brand-cream/20 rounded-full blur-3xl -z-10"
-        style={{ y: springY }}
+        style={{
+          y: backgroundY,
+          scale: backgroundScale,
+        }}
+      />
+
+      {/* Secondary floating element */}
+      <motion.div
+        className="absolute top-[60%] left-0 w-[400px] h-[400px] bg-brand-blue/10 rounded-full blur-3xl -z-10"
+        animate={{
+          y: [0, 50, 0],
+          x: [0, 30, 0],
+        }}
+        transition={{
+          duration: 20,
+          ease: "easeInOut",
+          repeat: Infinity,
+        }}
       />
 
       <div className="container mx-auto px-4 sm:px-6">
@@ -103,15 +114,46 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   {backImage && (
                     <motion.div
                       className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
-                      style={{ scale: springScale }}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      whileHover={{
+                        scale: 1.03,
+                        rotateY: 5,
+                        rotateX: 5,
+                        transition: {
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        },
+                      }}
+                      style={{
+                        transformStyle: "preserve-3d",
+                        perspective: "1000px",
+                      }}
                     >
+                      {/* Animated border glow */}
+                      <motion.div
+                        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100"
+                        animate={{
+                          background: [
+                            "linear-gradient(0deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(90deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(180deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(270deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(360deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          ],
+                        }}
+                        transition={{
+                          duration: 3,
+                          ease: "linear",
+                          repeat: Infinity,
+                        }}
+                      />
+
                       <motion.div
                         initial={{ opacity: 0, scale: 1.1 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                        className="relative z-10"
                       >
                         <Image
                           src={backImage.url}
@@ -132,10 +174,39 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   {frontImage && (
                     <motion.div
                       className="relative aspect-5/6 overflow-hidden rounded-2xl bg-gradient-to-br from-muted to-muted/50 border border-foreground/10 group"
-                      style={{ scale: springScale }}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      whileHover={{
+                        scale: 1.03,
+                        rotateY: -5,
+                        rotateX: 5,
+                        transition: {
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        },
+                      }}
+                      style={{
+                        transformStyle: "preserve-3d",
+                        perspective: "1000px",
+                      }}
                     >
+                      {/* Animated border glow */}
+                      <motion.div
+                        className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-100"
+                        animate={{
+                          background: [
+                            "linear-gradient(0deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(90deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(180deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(270deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                            "linear-gradient(360deg, transparent, rgba(var(--foreground), 0.3), transparent)",
+                          ],
+                        }}
+                        transition={{
+                          duration: 3,
+                          ease: "linear",
+                          repeat: Infinity,
+                        }}
+                      />
                       <motion.div
                         initial={{ opacity: 0, scale: 1.1 }}
                         animate={{ opacity: 1, scale: 1 }}

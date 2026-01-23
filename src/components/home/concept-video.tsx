@@ -83,18 +83,65 @@ export function ConceptVideo() {
 
                   <div className="text-center space-y-4 relative z-10">
                     <motion.div
-                      animate={{
-                        scale: [1, 1.05, 1],
-                        opacity: [0.5, 0.8, 0.5],
-                      }}
+                      className="relative w-20 h-20 mx-auto rounded-full flex items-center justify-center"
+                      whileHover={{ scale: 1.15 }}
                       transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut",
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
                       }}
-                      className="w-20 h-20 mx-auto rounded-full border-2 border-foreground/20 flex items-center justify-center"
                     >
-                      <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-foreground/40 border-b-8 border-b-transparent ml-1" />
+                      {/* Animated pulsing rings */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-foreground/30"
+                        animate={{
+                          scale: [1, 1.4, 1],
+                          opacity: [0.8, 0, 0.8],
+                        }}
+                        transition={{
+                          duration: 2,
+                          ease: "easeInOut",
+                          repeat: Infinity,
+                        }}
+                      />
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-foreground/30"
+                        animate={{
+                          scale: [1, 1.4, 1],
+                          opacity: [0.8, 0, 0.8],
+                        }}
+                        transition={{
+                          duration: 2,
+                          ease: "easeInOut",
+                          delay: 0.7,
+                          repeat: Infinity,
+                        }}
+                      />
+
+                      {/* Play button with hover effect */}
+                      <motion.div
+                        className="relative z-10 w-full h-full rounded-full border-2 border-foreground/20 flex items-center justify-center bg-background/50 backdrop-blur-sm"
+                        whileHover={{
+                          borderColor: "rgba(var(--foreground), 0.5)",
+                          backgroundColor: "rgba(var(--foreground), 0.05)",
+                        }}
+                      >
+                        <motion.div
+                          className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-foreground/60 border-b-8 border-b-transparent ml-1"
+                          animate={{
+                            borderLeftColor: [
+                              "rgba(var(--foreground), 0.6)",
+                              "rgba(var(--foreground), 0.9)",
+                              "rgba(var(--foreground), 0.6)",
+                            ],
+                          }}
+                          transition={{
+                            duration: 2,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                          }}
+                        />
+                      </motion.div>
                     </motion.div>
                     <p className="text-muted-foreground font-mono-alt text-sm tracking-wide">
                       {t("videoPlaceholder")}

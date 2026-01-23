@@ -8,14 +8,12 @@ import { MorphingBackground } from "@/components/ui/morphing-background";
 import { useTranslations } from "next-intl";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Announcements } from "@/components/announcement/announcements";
 
 export default function CatchAllNotFound() {
   const t = useTranslations("common.notFound");
 
   return (
     <>
-      <Announcements page="all" />
       <Header />
       <main className="flex-1">
         <div className="min-h-[calc(100vh-10rem)] flex items-center justify-center relative overflow-hidden py-16 sm:py-20 md:py-24">
@@ -45,11 +43,11 @@ export default function CatchAllNotFound() {
                 >
                   <div className="relative">
                     <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
+                      animate={{ rotate: [0, 5, -5, 0] }}
                       transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatDelay: 1,
+                        duration: 3,
+                        repeat: 3,
+                        repeatDelay: 2,
                       }}
                       className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-muted/50 flex items-center justify-center"
                     >

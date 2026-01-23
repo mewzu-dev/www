@@ -144,6 +144,11 @@
     font-weight: 700;
     letter-spacing: -0.02em;
   }
+
+  /* Hardware acceleration for common transform properties */
+  .will-change-transform {
+    will-change: transform;
+  }
 }
 
 @layer utilities {
