@@ -1,7 +1,27 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getAllProductSlugs } from "@/sanity/lib";
-import { ProductDetailClient } from "@/components/product/product-detail-client";
+
+// Lazy load heavy animation component to reduce bundle size
+const ProductDetailClient = dynamic(
+  () =>
+    import("@/components/product/product-detail-client").then(
+      (mod) => mod.ProductDetailClient,
+    ),
+  {
+    loading: () => (
+      <div className="container mx-auto px-4 py-8">
+        <div className="min-h-[800px] animate-pulse space-y-4">
+          <div className="h-12 w-3/4 bg-muted rounded" />
+          <div className="h-6 w-1/2 bg-muted rounded" />
+          <div className="h-96 bg-muted rounded" />
+          <div className="h-24 bg-muted rounded" />
+        </div>
+      </div>
+    ),
+  },
+);
 
 interface ProductPageProps {
   params: Promise<{

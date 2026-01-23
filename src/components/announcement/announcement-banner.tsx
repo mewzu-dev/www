@@ -79,24 +79,17 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
   };
 
   const bannerVariants = {
-    hidden: { y: -100, opacity: 0, scale: 0.95 },
+    hidden: { opacity: 0 }, // Remove y transform to prevent CLS
     visible: {
-      y: 0,
       opacity: 1,
-      scale: 1,
       transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 20,
-        mass: 0.8,
-        duration: 0.6,
+        duration: 0.3,
+        ease: "easeOut",
       },
     },
     exit: {
-      y: -100,
       opacity: 0,
-      scale: 0.95,
-      transition: { duration: 0.3, ease: "easeInOut" },
+      transition: { duration: 0.2, ease: "easeInOut" },
     },
   };
 

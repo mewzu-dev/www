@@ -12,9 +12,14 @@ import { useMounted } from "@/hooks/use-mounted";
 interface ProductCardProps {
   product: Product;
   index?: number;
+  priority?: boolean; // For LCP optimization on above-the-fold images
 }
 
-export function ProductCard({ product, index = 0 }: ProductCardProps) {
+export function ProductCard({
+  product,
+  index = 0,
+  priority = false,
+}: ProductCardProps) {
   const backImage =
     product.images.find((img) => img.view === "back") || product.images[0];
   const frontImage = product.images.find((img) => img.view === "front");
@@ -53,6 +58,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    priority={priority}
                   />
                 </div>
 
