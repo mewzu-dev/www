@@ -7,6 +7,7 @@ import { AnimatedTable } from "@/components/size-guide/animated-table";
 import { MeasurementGuideCard } from "@/components/size-guide/measurement-guide-card";
 import { MorphingBackground } from "@/components/ui/morphing-background";
 import { RevealCard } from "@/components/ui/reveal-card";
+import { PageContentWrapper } from "@/components/layout/page-content-wrapper";
 import { useTranslations } from "next-intl";
 
 export default function SizeGuidePage() {
@@ -57,7 +58,7 @@ export default function SizeGuidePage() {
   ];
 
   return (
-    <div className="min-h-screen pt-32 pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pt-8 pb-24 relative overflow-hidden">
       {/* Morphing background */}
       <MorphingBackground
         colors={["bg-brand-green/10", "bg-brand-cream/20", "bg-brand-blue/10"]}
@@ -176,6 +177,6 @@ export default function SizeGuidePage() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </PageContentWrapper>
   );
 }

@@ -13,6 +13,7 @@ import { useRef } from "react";
 import { ContactCard } from "@/components/contact/contact-card";
 import { MorphingBackground } from "@/components/ui/morphing-background";
 import { RevealCard } from "@/components/ui/reveal-card";
+import { PageContentWrapper } from "@/components/layout/page-content-wrapper";
 import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
@@ -56,7 +57,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pt-8 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
       {/* Morphing background */}
       <MorphingBackground
         colors={["bg-brand-cream/30", "bg-brand-blue/10", "bg-brand-orange/10"]}
@@ -153,6 +154,6 @@ export default function ContactPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </PageContentWrapper>
   );
 }

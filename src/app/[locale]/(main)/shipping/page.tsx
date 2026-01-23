@@ -10,6 +10,7 @@ import {
 import { Package, Truck, RotateCcw, Shield } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { PageContentWrapper } from "@/components/layout/page-content-wrapper";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
@@ -37,7 +38,7 @@ export default function ShippingPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-32 pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pt-8 pb-24 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-20 left-0 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-3xl -z-10" />
 
@@ -310,6 +311,6 @@ export default function ShippingPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </PageContentWrapper>
   );
 }

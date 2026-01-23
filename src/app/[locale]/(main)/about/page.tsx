@@ -6,6 +6,7 @@ import { Palette, Heart, Sparkles, Target } from "lucide-react";
 import { InteractiveSection } from "@/components/about/interactive-section";
 import { MorphingBackground } from "@/components/ui/morphing-background";
 import { RevealCard } from "@/components/ui/reveal-card";
+import { PageContentWrapper } from "@/components/layout/page-content-wrapper";
 import { useTranslations } from "next-intl";
 
 export default function AboutPage() {
@@ -54,7 +55,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
+    <PageContentWrapper className="min-h-screen pt-8 pb-16 sm:pb-20 md:pb-24 relative overflow-hidden">
       {/* Morphing background */}
       <MorphingBackground
         colors={["bg-brand-orange/10", "bg-brand-blue/10", "bg-brand-cream/20"]}
@@ -126,6 +127,6 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </PageContentWrapper>
   );
 }

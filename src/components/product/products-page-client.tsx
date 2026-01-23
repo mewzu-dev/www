@@ -1,6 +1,7 @@
 "use client";
 
 import { ProductGrid } from "@/components/product/product-grid";
+import { PageContentWrapper } from "@/components/layout/page-content-wrapper";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import type { Product } from "@/types";
@@ -13,7 +14,7 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
   const t = useTranslations("products.listing");
 
   return (
-    <div className="min-h-screen pt-32 pb-24">
+    <PageContentWrapper className="min-h-screen pt-8 pb-24">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -45,6 +46,6 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
           <ProductGrid products={products} />
         </motion.div>
       </div>
-    </div>
+    </PageContentWrapper>
   );
 }
