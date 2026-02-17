@@ -12,6 +12,8 @@ export const products: Product[] = [
     story: 'In this design, our cat finds peace in the most unexpected place - a cozy bathroom. It\'s about finding your zen wherever you are, even in the smallest moments of daily life.',
     baseColor: 'White',
     artColor: 'Blue tones',
+    price: 149000,
+    material: 'Cotton Combed 30s, 200gsm',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     images: [
       {
@@ -49,6 +51,8 @@ export const products: Product[] = [
     story: 'The kitchen is where magic happens - not just cooking, but conversations, laughter, and memories. Our cat witnesses it all from the same centered position, observing the beautiful chaos of daily life.',
     baseColor: 'Cream',
     artColor: 'Warm orange and red',
+    price: 149000,
+    material: 'Cotton Combed 30s, 200gsm',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     images: [
       {
@@ -86,6 +90,8 @@ export const products: Product[] = [
     story: 'In a world of concrete and screens, we all need a reminder of nature\'s beauty. Our cat stays perfectly still while the garden blooms around it - a meditation on finding stillness in growth.',
     baseColor: 'Natural',
     artColor: 'Vibrant greens',
+    price: 149000,
+    material: 'Cotton Combed 30s, 200gsm',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     images: [
       {

@@ -1,4 +1,4 @@
-import { getAnnouncementsByPage } from "@/sanity/lib";
+import { getAnnouncementsByPage } from "@/lib/db/announcements";
 import { AnnouncementBanner } from "./announcement-banner";
 import { AnnouncementModal } from "./announcement-modal";
 

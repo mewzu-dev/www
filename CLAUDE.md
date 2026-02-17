@@ -18,14 +18,15 @@ When users ask about:
 
 ## Project Overview
 
-Mewzu is a Next.js e-commerce application for custom cat-themed t-shirts with Sanity.io headless CMS.
+Mewzu is a Next.js e-commerce application for custom cat-themed t-shirts with a self-built CMS backed by Supabase.
 
 **Tech Stack:**
 - Framework: Next.js 16 (App Router)
 - Language: TypeScript (strict mode)
-- CMS: Sanity.io (headless, embedded Studio at `/admin`)
+- CMS: Custom admin panel at `/admin` (Supabase PostgreSQL + Storage + Auth)
 - Styling: Tailwind CSS v4
 - UI Components: shadcn/ui (preferred)
+- Rich Text: TipTap (for announcement content)
 - Icons: lucide-react
 - Package Manager: npm
 
@@ -160,56 +161,65 @@ import { cn } from '@/lib/utils'
 
 ## Key Files
 
-- `next.config.ts` - Next.js configuration (includes Sanity image domains)
-- `sanity.config.ts` - Sanity Studio configuration
+- `next.config.ts` - Next.js configuration
 - `tailwind.config.ts` - Tailwind CSS configuration (v4 syntax)
 - `postcss.config.mjs` - PostCSS configuration (uses `@tailwindcss/postcss`)
 - `tsconfig.json` - TypeScript configuration
-- `.eslintrc.json` - ESLint rules
 - `components.json` - shadcn/ui configuration
 - `.env.local` - Environment variables (never commit this)
 
-## CMS Integration
+## CMS Integration (Supabase)
 
-### Sanity Content Types
+### Content Types
 
 1. **Product** - T-shirt products with images, colors, sizes, marketplace links
-2. **Announcement** - Banners and modals for site-wide announcements
+2. **Announcement** - Banners and modals for site-wide announcements (HTML content via TipTap)
 
-### Key Sanity Files
+### Key CMS Files
 
-- `src/sanity/schemas/` - Content schemas (product, announcement)
-- `src/sanity/queries.ts` - GROQ queries for data fetching
-- `src/sanity/lib.ts` - Data fetching functions
-- `src/sanity/client.ts` - Sanity client configuration
-- `src/app/admin/[[...index]]/page.tsx` - Embedded Studio route
+- `src/lib/supabase/server.ts` - Server-side Supabase client (uses cookies)
+- `src/lib/supabase/client.ts` - Browser-side Supabase client
+- `src/lib/supabase/static.ts` - Build-time Supabase client (no cookies, for generateStaticParams)
+- `src/lib/supabase/middleware.ts` - Auth session refresh for admin routes
+- `src/lib/supabase/storage.ts` - Image upload/delete to Supabase Storage
+- `src/lib/db/products.ts` - Product data fetching functions
+- `src/lib/db/announcements.ts` - Announcement data fetching functions
+
+### Admin Panel
+
+- Located at `src/app/admin/` (outside `[locale]` group, no i18n)
+- Auth: Supabase Auth (email/password)
+- Products CRUD: `src/app/admin/(dashboard)/products/`
+- Announcements CRUD: `src/app/admin/(dashboard)/announcements/`
+- Shared components: `src/components/admin/`
 
 ### Data Fetching Pattern
 
 ```typescript
 // Server Component
-import { getProducts } from '@/sanity/lib'
+import { getAllProducts } from '@/lib/db/products'
 
 export const revalidate = 60 // ISR cache
 
 export default async function ProductsPage() {
-  const products = await getProducts()
+  const products = await getAllProducts()
   return <ProductGrid products={products} />
 }
 ```
 
 ### Important Notes
 
-- All content is managed via Sanity Studio at `/admin` route
+- All content is managed via custom admin panel at `/admin`
 - Business partner manages content (no developer needed)
-- ISR caching: 60-second revalidation
-- Never hardcode content - always fetch from Sanity
-- Images served from Sanity CDN
+- ISR caching: 60-second revalidation on public pages
+- Never hardcode content - always fetch from Supabase
+- Images served from Supabase Storage (public bucket: `product-images`)
+- Announcement content stored as HTML (edited via TipTap rich text editor)
 
 ## Content Management
 
 When working with products or announcements:
-1. **Never hardcode content** - Always fetch from Sanity
-2. **Use existing queries** - Located in `src/sanity/queries.ts`
+1. **Never hardcode content** - Always fetch from Supabase via `src/lib/db/`
+2. **Use existing functions** - `getAllProducts`, `getFeaturedProducts`, `getProductBySlug`, `getAnnouncementsByPage`
 3. **Follow ISR pattern** - Set `revalidate = 60` on pages
-4. **Type safety** - Use types from `src/types/index.ts`
+4. **Type safety** - Use types from `src/types/index.ts` (`Product`, `Announcement`)

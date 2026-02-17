@@ -1,47 +1,73 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PortableText } from "@portabletext/react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { SanityAnnouncement } from "@/sanity/lib";
+import type { Announcement } from "@/types";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const SEEN_KEY = "mewzu_seen_modals";
+
+function getSeenIds(): Set<string> {
+  try {
+    const stored = sessionStorage.getItem(SEEN_KEY);
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function markAsSeen(ids: string[]) {
+  try {
+    const current = getSeenIds();
+    ids.forEach((id) => current.add(id));
+    sessionStorage.setItem(SEEN_KEY, JSON.stringify([...current]));
+  } catch {
+    // sessionStorage unavailable
+  }
+}
+
 interface AnnouncementModalProps {
-  announcements: SanityAnnouncement[];
+  announcements: Announcement[];
 }
 
 export function AnnouncementModal({ announcements }: AnnouncementModalProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [open, setOpen] = useState(false);
+  const [unseenAnnouncements, setUnseenAnnouncements] = useState<Announcement[]>([]);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (announcements.length > 0) {
-      const timer = setTimeout(() => {
-        setOpen(true);
-      }, 1500); // Slightly longer delay for better UX
-      return () => clearTimeout(timer);
-    }
-  }, [announcements.length]);
+    if (announcements.length === 0) return;
 
-  if (announcements.length === 0) {
+    const seen = getSeenIds();
+    const unseen = announcements.filter((a) => !seen.has(a.id));
+    if (unseen.length === 0) return;
+
+    setUnseenAnnouncements(unseen);
+    const timer = setTimeout(() => {
+      setOpen(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [announcements]);
+
+  if (unseenAnnouncements.length === 0) {
     return null;
   }
 
-  const currentAnnouncement = announcements[currentIndex];
+  const currentAnnouncement = unseenAnnouncements[currentIndex];
 
   const handleNext = () => {
-    if (currentIndex < announcements.length - 1) {
+    if (currentIndex < unseenAnnouncements.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      setOpen(false);
+      handleClose();
     }
   };
 
@@ -52,6 +78,8 @@ export function AnnouncementModal({ announcements }: AnnouncementModalProps) {
   };
 
   const handleClose = () => {
+    // Mark all as seen so they don't reappear this session
+    markAsSeen(unseenAnnouncements.map((a) => a.id));
     setOpen(false);
     setCurrentIndex(0);
   };
@@ -101,9 +129,8 @@ export function AnnouncementModal({ announcements }: AnnouncementModalProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
       <DialogContent className="max-w-2xl overflow-hidden border-2">
-        {/* Decorative gradient background */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <motion.div
             className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl"
@@ -162,65 +189,24 @@ export function AnnouncementModal({ announcements }: AnnouncementModalProps) {
             exit="exit"
             className="relative"
           >
-            <div className="prose prose-sm max-w-none dark:prose-invert py-4">
-              <PortableText
-                value={currentAnnouncement.content}
-                components={{
-                  block: {
-                    normal: ({ children }) => (
-                      <p className="mb-4 leading-relaxed">{children}</p>
-                    ),
-                    h1: ({ children }) => (
-                      <h1 className="text-2xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                        {children}
-                      </h1>
-                    ),
-                    h2: ({ children }) => (
-                      <h2 className="text-xl font-semibold mb-3">{children}</h2>
-                    ),
-                  },
-                  marks: {
-                    strong: ({ children }) => (
-                      <strong className="font-bold text-foreground">
-                        {children}
-                      </strong>
-                    ),
-                    em: ({ children }) => <em>{children}</em>,
-                    link: ({ value, children }) => (
-                      <a
-                        href={value?.href}
-                        className="inline-flex items-center gap-1 text-primary hover:underline underline-offset-2 font-medium group"
-                        target={
-                          value?.href?.startsWith("http") ? "_blank" : undefined
-                        }
-                        rel={
-                          value?.href?.startsWith("http")
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                      >
-                        {children}
-                        <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-                      </a>
-                    ),
-                  },
-                }}
-              />
-            </div>
+            <div
+              className="prose prose-sm max-w-none dark:prose-invert py-4 [&_p]:mb-4 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:text-primary [&_a]:font-medium hover:[&_a]:underline [&_a]:underline-offset-2"
+              dangerouslySetInnerHTML={{
+                __html: currentAnnouncement.content,
+              }}
+            />
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation footer */}
-        {announcements.length > 1 && (
+        {unseenAnnouncements.length > 1 && (
           <div className="flex items-center justify-between pt-6 border-t mt-2">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">
-                {currentIndex + 1} of {announcements.length}
+                {currentIndex + 1} of {unseenAnnouncements.length}
               </span>
 
-              {/* Progress dots */}
               <div className="flex gap-1.5 ml-2">
-                {announcements.map((_, idx) => (
+                {unseenAnnouncements.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => {
@@ -270,7 +256,7 @@ export function AnnouncementModal({ announcements }: AnnouncementModalProps) {
                 onClick={handleNextWithDirection}
                 className="text-sm group"
               >
-                {currentIndex < announcements.length - 1 ? (
+                {currentIndex < unseenAnnouncements.length - 1 ? (
                   <>
                     Next
                     <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-0.5" />

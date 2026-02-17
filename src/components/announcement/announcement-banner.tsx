@@ -1,14 +1,32 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { PortableText } from "@portabletext/react";
-import { X, ChevronRight } from "lucide-react";
-import { SanityAnnouncement } from "@/sanity/lib";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { X } from "lucide-react";
+import type { Announcement } from "@/types";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useLayout } from "@/components/layout/layout-context";
 
+const DISMISSED_KEY = "mewzu_dismissed_banners";
+
+function getDismissedIds(): Set<string> {
+  try {
+    const stored = localStorage.getItem(DISMISSED_KEY);
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function persistDismissedIds(ids: Set<string>) {
+  try {
+    localStorage.setItem(DISMISSED_KEY, JSON.stringify([...ids]));
+  } catch {
+    // localStorage unavailable
+  }
+}
+
 interface AnnouncementBannerProps {
-  announcements: SanityAnnouncement[];
+  announcements: Announcement[];
 }
 
 export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
@@ -19,14 +37,15 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
   const { setAnnouncementHeight } = useLayout();
   const bannerRef = useRef<HTMLDivElement>(null);
 
-  const visibleAnnouncements = announcements.filter(
-    (announcement) => !dismissed.has(announcement._id),
-  );
-
-  // Show banner after mount (prevents hydration mismatch)
+  // Load persisted dismissed state on mount
   useEffect(() => {
+    setDismissed(getDismissedIds());
     setIsVisible(true);
   }, []);
+
+  const visibleAnnouncements = announcements.filter(
+    (announcement) => !dismissed.has(announcement.id),
+  );
 
   // Update layout context when banner height changes or when dismissed
   useEffect(() => {
@@ -39,10 +58,7 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
       }
     };
 
-    // Measure immediately
     updateHeight();
-
-    // Measure after animations settle
     const timeout1 = setTimeout(updateHeight, 50);
     const timeout2 = setTimeout(updateHeight, 200);
     const timeout3 = setTimeout(updateHeight, 400);
@@ -72,7 +88,9 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
   const currentAnnouncement = visibleAnnouncements[currentIndex];
 
   const handleDismiss = (id: string) => {
-    setDismissed((prev) => new Set([...prev, id]));
+    const updated = new Set([...dismissed, id]);
+    setDismissed(updated);
+    persistDismissedIds(updated);
     if (currentIndex >= visibleAnnouncements.length - 1) {
       setCurrentIndex(0);
     }
@@ -135,16 +153,14 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
         data-announcement-banner
       >
         <div className="relative overflow-hidden bg-gradient-to-r from-primary via-primary/95 to-primary">
-          {/* CSS-based shimmer effect using keyframes animation */}
           {!shouldReduceMotion && (
             <div className="absolute inset-0 shimmer-effect" />
           )}
 
-          {/* Content */}
           <div className="relative">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
-                key={currentAnnouncement._id}
+                key={currentAnnouncement.id}
                 variants={
                   shouldReduceMotion ? reducedContentVariants : contentVariants
                 }
@@ -154,7 +170,6 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
                 className="py-3 px-4 text-center text-sm"
               >
                 <div className="container mx-auto flex items-center justify-between gap-4">
-                  {/* Progress indicators */}
                   {visibleAnnouncements.length > 1 && (
                     <div className="hidden sm:flex items-center gap-1.5 min-w-[80px]">
                       {visibleAnnouncements.map((_, idx) => (
@@ -183,60 +198,17 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
 
                   <div className="sm:hidden min-w-[20px]" />
 
-                  {/* Announcement content */}
                   <div className="flex-1 flex justify-center items-center gap-2 text-primary-foreground">
-                    <div className="portable-text-inline">
-                      <PortableText
-                        value={currentAnnouncement.content}
-                        components={{
-                          block: {
-                            normal: ({ children }) => (
-                              <span className="inline-block">{children}</span>
-                            ),
-                            h1: ({ children }) => (
-                              <span className="font-bold text-base inline-block">
-                                {children}
-                              </span>
-                            ),
-                            h2: ({ children }) => (
-                              <span className="font-semibold inline-block">
-                                {children}
-                              </span>
-                            ),
-                          },
-                          marks: {
-                            strong: ({ children }) => (
-                              <strong className="font-bold">{children}</strong>
-                            ),
-                            em: ({ children }) => <em>{children}</em>,
-                            link: ({ value, children }) => (
-                              <a
-                                href={value?.href}
-                                className="inline-flex items-center gap-1 underline decoration-primary-foreground/40 underline-offset-2 hover:decoration-primary-foreground transition-colors group/link"
-                                target={
-                                  value?.href?.startsWith("http")
-                                    ? "_blank"
-                                    : undefined
-                                }
-                                rel={
-                                  value?.href?.startsWith("http")
-                                    ? "noopener noreferrer"
-                                    : undefined
-                                }
-                              >
-                                {children}
-                                <ChevronRight className="h-3 w-3 transition-transform group-hover/link:translate-x-0.5" />
-                              </a>
-                            ),
-                          },
-                        }}
-                      />
-                    </div>
+                    <div
+                      className="announcement-banner-content [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:underline [&_a]:decoration-primary-foreground/40 [&_a]:underline-offset-2 hover:[&_a]:decoration-primary-foreground [&_a]:transition-colors [&_p]:inline [&_h1]:font-bold [&_h1]:text-base [&_h1]:inline [&_h2]:font-semibold [&_h2]:inline"
+                      dangerouslySetInnerHTML={{
+                        __html: currentAnnouncement.content,
+                      }}
+                    />
                   </div>
 
-                  {/* Dismiss button */}
                   <motion.button
-                    onClick={() => handleDismiss(currentAnnouncement._id)}
+                    onClick={() => handleDismiss(currentAnnouncement.id)}
                     className="group relative flex-shrink-0 hover:bg-primary-foreground/20 rounded-md p-1.5 transition-colors"
                     aria-label="Dismiss announcement"
                     whileHover={
@@ -252,7 +224,6 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
           </div>
         </div>
 
-        {/* Bottom shine effect */}
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-foreground/30 to-transparent" />
       </motion.div>
     </AnimatePresence>

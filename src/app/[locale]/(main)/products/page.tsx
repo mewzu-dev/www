@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ProductsPageClient } from "@/components/product/products-page-client";
-import { getAllProducts } from "@/sanity/lib";
+import { getAllProducts } from "@/lib/db/products";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Products",

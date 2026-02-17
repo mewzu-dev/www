@@ -27,10 +27,25 @@ export interface Product {
   story: string;
   baseColor: string;
   artColor: string;
+  price: number;
+  material: string;
   sizes: Size[];
   images: ProductImage[];
   featured: boolean;
   externalLinks: ExternalLink[];
+}
+
+// Announcement types
+export interface Announcement {
+  id: string;
+  title: string;
+  content: string; // HTML string
+  type: "banner" | "modal";
+  startDate?: string;
+  endDate?: string;
+  targetPages?: string[];
+  priority: number;
+  isActive: boolean;
 }
 
 // Size measurements for size guide

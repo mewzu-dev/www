@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getAllProductSlugs } from "@/sanity/lib";
+import { getProductBySlug, getAllProductSlugs } from "@/lib/db/products";
+
+export const revalidate = 60;
 
 // Lazy load heavy animation component to reduce bundle size
 const ProductDetailClient = dynamic(

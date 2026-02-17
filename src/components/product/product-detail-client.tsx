@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Ruler, Palette, Sparkles, BookOpen, Package } from "lucide-react";
+import { Ruler, Palette, Sparkles, BookOpen, Package, Shirt } from "lucide-react";
 import {
   motion,
   useMotionValue,
@@ -18,7 +18,7 @@ import {
 } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useState, useEffect, useMemo } from "react";
-import { throttle } from "@/lib/utils";
+import { throttle, formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 
 interface ProductDetailClientProps {
@@ -264,7 +264,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
               </motion.div>
             </motion.div>
 
-            {/* Title */}
+            {/* Title & Price */}
             <motion.div
               className="space-y-2 sm:space-y-3"
               initial={{ opacity: 0, y: 20 }}
@@ -277,6 +277,11 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
               <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
                 {product.tagline}
               </p>
+              {product.price > 0 && (
+                <p className="text-2xl sm:text-3xl font-bold font-mono-alt tracking-tight">
+                  {formatPrice(product.price)}
+                </p>
+              )}
             </motion.div>
 
             <motion.div
@@ -357,11 +362,11 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                     </div>
                     <div className="space-y-1">
                       <p className="text-muted-foreground font-mono-alt text-xs tracking-wide uppercase flex items-center gap-1.5">
-                        <Package className="w-3 h-3" />
-                        {t("details.scene")}
+                        <Shirt className="w-3 h-3" />
+                        {t("details.material")}
                       </p>
                       <p className="font-medium text-sm sm:text-base">
-                        {product.scene}
+                        {product.material}
                       </p>
                     </div>
                     <div className="space-y-1">

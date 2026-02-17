@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/home/hero";
-import { getFeaturedProducts } from "@/sanity/lib";
+import { getFeaturedProducts } from "@/lib/db/products";
+
+export const revalidate = 60;
 
 // Lazy load below-the-fold components to reduce initial bundle
 const FeaturedProducts = dynamic(

@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, ArrowUpRight } from "lucide-react";
 import { TiltCard } from "@/components/ui/tilt-card";
 import { ShineEffect } from "@/components/ui/shine-effect";
+import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 import { useMounted } from "@/hooks/use-mounted";
 
@@ -136,7 +137,7 @@ export function ProductCard({
 
               {/* Content */}
               <div className="p-5 sm:p-6 space-y-3">
-                {/* Title */}
+                {/* Title & Price */}
                 <div className="space-y-1.5">
                   <h3 className="font-display text-xl sm:text-2xl font-bold leading-tight tracking-tight group-hover:text-foreground/70 transition-colors duration-300">
                     {product.name}
@@ -144,6 +145,11 @@ export function ProductCard({
                   <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                     {product.tagline}
                   </p>
+                  {product.price > 0 && (
+                    <p className="text-base sm:text-lg font-semibold font-mono-alt tracking-tight">
+                      {formatPrice(product.price)}
+                    </p>
+                  )}
                 </div>
 
                 {/* Tags */}
