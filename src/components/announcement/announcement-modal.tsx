@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import DOMPurify from "dompurify";
 import type { Announcement } from "@/types";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronRight, Sparkles } from "lucide-react";
@@ -192,7 +193,7 @@ export function AnnouncementModal({ announcements }: AnnouncementModalProps) {
             <div
               className="prose prose-sm max-w-none dark:prose-invert py-4 [&_p]:mb-4 [&_p]:leading-relaxed [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mb-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:text-primary [&_a]:font-medium hover:[&_a]:underline [&_a]:underline-offset-2"
               dangerouslySetInnerHTML={{
-                __html: currentAnnouncement.content,
+                __html: DOMPurify.sanitize(currentAnnouncement.content),
               }}
             />
           </motion.div>

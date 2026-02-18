@@ -1,5 +1,4 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import DOMPurify from "isomorphic-dompurify";
 import type { Announcement } from "@/types";
 
 interface DbAnnouncementRow {
@@ -18,7 +17,7 @@ function transformAnnouncement(row: DbAnnouncementRow): Announcement {
   return {
     id: row.id,
     title: row.title,
-    content: DOMPurify.sanitize(row.content),
+    content: row.content,
     type: row.type as Announcement["type"],
     startDate: row.start_date ?? undefined,
     endDate: row.end_date ?? undefined,

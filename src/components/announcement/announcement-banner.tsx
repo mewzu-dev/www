@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { X } from "lucide-react";
+import DOMPurify from "dompurify";
 import type { Announcement } from "@/types";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useLayout } from "@/components/layout/layout-context";
@@ -202,7 +203,7 @@ export function AnnouncementBanner({ announcements }: AnnouncementBannerProps) {
                     <div
                       className="announcement-banner-content [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:underline [&_a]:decoration-primary-foreground/40 [&_a]:underline-offset-2 hover:[&_a]:decoration-primary-foreground [&_a]:transition-colors [&_p]:inline [&_h1]:font-bold [&_h1]:text-base [&_h1]:inline [&_h2]:font-semibold [&_h2]:inline"
                       dangerouslySetInnerHTML={{
-                        __html: currentAnnouncement.content,
+                        __html: DOMPurify.sanitize(currentAnnouncement.content),
                       }}
                     />
                   </div>
